@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To-Do-List</title>
+  <link rel="stylesheet" href="./index.css">
+</head>
+
+<body>
+  <div class="header">
+    <div>
+      <h1 class="logo">To-Do-List</h1>
+    </div>
+    <ul>
+      <li>Home</li>
+      <li>ContactUs</li>
+      <li>AboutUs</li>
+      <li>Login</li>
+      <li>SignUp</li>
+    </ul>
+  </div>
+  <div class="container">
+    <div class="main">
+      <h2> Manage Your Todos at one place</h2>
+      <div class="todo">
+        <label for="">Add a Todo</label>
+        <form action="" id="todoform">
+        <div class="todo-input" id="todo-input">
+            <input type="text" id="todo">
+            <button type="submit" id="save">Save</button>
+          </div>
+        </form>
+        <div class="line"></div>
+        <h3 class="your-todos">Your Todos</h3>
+        <div id="div">
+        
+
+      </div>
+
+    </div>
+
+  </div>
+
+  </div>
+  <footer class="footer">
+    <div class="footer-container">
+      <p>&copy; 2024 To-Do-List. All rights reserved.</p>
+      <p>
+        <a href="https://www.example.com/privacy-policy">Privacy Policy</a> |
+        <a href="https://www.example.com/terms-of-service">Terms of Service</a>
+      </p>
+    </div>
+  </footer>
+  <script>
+  let newtodo=document.getElementById("todo");
+let todoform=document.getElementById("todoform");
+let div=document.getElementById("div");
+
+let delet=document.getElementsByClassName("delete")[0];
+
+let todolist=JSON.parse(localStorage.getItem("todo")) || [];
+   
+function render (){
+let todolist=JSON.parse(localStorage.getItem("todo")) || [];
+  div.innerHTML=""
+   
+  todolist.map((item,index)=>{
+      let createp=document.createElement("p");
+      let createText=document.createTextNode(item.todo);
+        createp.appendChild(createText);
+
+        let containerText=document.createElement("div");
+        containerText.className="todo-text";
+
+        containerText.appendChild(createp);
+
+        let buttonContainer=document.createElement("div");
+        buttonContainer.className="todo-button"
+
+        let creaetB1=document.createElement("button");
+        let createTextb1=document.createTextNode("Edit");
+          creaetB1.className="edit";
+          creaetB1.appendChild(createTextb1);
+          
+          buttonContainer.appendChild(creaetB1)
+          
+          let creaetB2=document.createElement("button");
+          let createTextb2=document.createTextNode("Delete");
+          creaetB2.className="delete";
+          creaetB2.appendChild(createTextb2);
+
+             buttonContainer.appendChild(creaetB2);
+
+      let container=document.createElement("div");
+      container.className="main-todo"
+
+      
+      creaetB1.addEventListener("click",function(){
+        let todoInput=document.getElementById("todo-input")
+        let input=document.getElementById("todo")
+         let save= document.getElementById("save");
+          todoInput.removeChild(save);
+          let creaetButton=document.createElement("button");
+          let text=document.createTextNode("Update");
+             creaetButton.id="update"
+            creaetButton.style.background="green";
+            creaetButton.appendChild(text)
+                  
+            let edit=todolist.filter((item,i)=>i===index);
+            edit.map((item,i)=>{
+              input.value=item.todo;
+            })
+              creaetButton.addEventListener("click",(e)=>{
+                e.preventDefault()
+                if(e.target.id==="update"){
+
+                  todolist.splice(index,1,{todo:document.getElementById("todo").value});
+                    localStorage.setItem("todo",JSON.stringify(todolist));
+                      input.value="";
+                    todoInput.removeChild(creaetButton);
+
+                    todoInput.appendChild(save)
+                    
+                    render();
+                }
+
+              })   
+              todoInput.appendChild(creaetButton);
+     
+                
+          
+      })
+
+        creaetB2.addEventListener("click",function(e){
+         
+          todolist.splice(index,1);
+
+            localStorage.removeItem("todo")
+          
+            localStorage.setItem("todo",JSON.stringify(todolist));
+            render();
+            alert("Do you want to Delete this Todo?");
+        })
+
+      container.appendChild(containerText);
+       container.appendChild(buttonContainer) 
+       div.appendChild(container);
+})    
+}
+
+  todoform.addEventListener("submit",function(e){
+    e.preventDefault();
+  let getTodo=JSON.parse(localStorage.getItem("todo"));
+  if(newtodo.value===""){
+    alert("Please fill todo for save on clound");
+    return;
+  }else{
+    if(!getTodo){
+      
+      localStorage.removeItem("todo");
+      localStorage.setItem("todo",JSON.stringify([{todo:newtodo.value}]));
+      render();
+      newtodo.value="";
+    }else{
+      
+      let getTodo=JSON.parse(localStorage.getItem("todo"))
+   let newTodos=  getTodo.concat({todo:newtodo.value});
+
+   localStorage.removeItem("todo");
+   localStorage.setItem("todo",JSON.stringify(newTodos))
+   render()
+   newtodo.value="";
+ }
+ }
+  })
+
+  render();
+  </script>
+</body>
+
+</html>
